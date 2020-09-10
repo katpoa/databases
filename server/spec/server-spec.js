@@ -15,7 +15,13 @@ describe('Persistent Node Chat Server', function() {
       database: 'chat'
     });
     // invoking the connection
-    dbConnection.connect();
+    dbConnection.connect((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Spec connected to database!');
+      }
+    });
 
     var tablename = 'messages'; // TODO: fill this out
 
@@ -40,8 +46,8 @@ describe('Persistent Node Chat Server', function() {
         method: 'POST',
         uri: 'http://127.0.0.1:3000/classes/messages',
         json: {
-          username: 'Valjean',
-          message: 'In mercy\'s name, three days is all I need.',
+          // username: 'Valjean',
+          txt: 'In mercy\'s name, three days is all I need.',
           roomname: 'Hello'
         }
       }, function () {
@@ -54,6 +60,10 @@ describe('Persistent Node Chat Server', function() {
         var queryArgs = [];
 
         dbConnection.query(queryString, queryArgs, function(err, results) {
+          if (err) {
+            console.log('Error! ', err);
+            done();
+          }
           // Should have one result:
           expect(results.length).to.equal(1);
 
@@ -81,7 +91,8 @@ describe('Persistent Node Chat Server', function() {
       // the message we just inserted:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messageLog = JSON.parse(body);
-        expect(messageLog[0].text).to.equal('Men like you can never change!');
+
+        expect(messageLog[0].txt).to.equal('Men like you can never change!');
         expect(messageLog[0].roomname).to.equal('main');
         done();
       });
