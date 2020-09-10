@@ -14,7 +14,7 @@ dbConnect = mysql.createConnection({
 //invoking connection
 // dbConnect.connect();
 // dbConnect.query();
-
+dbConnect.connect();
 module.exports = {
   dbConnect: dbConnect
 };
